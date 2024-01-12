@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?><!-- Translations contributed initially by @CycloMies -->
 <resources>
     <string name="channel_name">Kanavan nimi</string>
+    <!-- res/values-fi/strings.xml -->
+    <string name="speed_text">Nopeus: 0,00 km/h</string>
+
     <string name="channel_options">Kanavan ominaisuudet</string>
     <string name="qr_code">QR koodi</string>
     <string name="unset">Yhdistämättä</string>

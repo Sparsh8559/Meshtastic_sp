@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_name">Kanalname</string>
+    <!-- res/values-de/strings.xml -->
+    <string name="speed_text">Geschwindigkeit: 0,00 km/h</string>
+
     <string name="channel_options">Kanaloptionen</string>
     <string name="qr_code">QR-Code</string>
     <string name="unset">Nicht konfiguriert</string>

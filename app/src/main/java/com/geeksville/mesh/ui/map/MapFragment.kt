@@ -121,6 +121,23 @@ private fun MapView.UpdateMarkers(
     overlays.addAll(nodeMarkers + waypointMarkers)
 }
 
+// Helper function to calculate points for a circle
+fun calculateCirclePoints(centerLat: Double, centerLon: Double, radiusMeters: Double): List<GeoPoint> {
+    // Implementation of the algorithm to calculate points for a circle
+    // You can find various algorithms online or use a library like SphericalUtil from Google Maps Android API Utility Library
+    // For simplicity, here's a basic example (not suitable for large distances)
+    val points = mutableListOf<GeoPoint>()
+    val steps = 36 // Number of steps in the circle
+    val radiusDegrees = radiusMeters / 111000.0 // Approximate conversion from meters to degrees
+    for (i in 0 until steps) {
+        val theta = 2.0 * Math.PI * i / steps
+        val pointLat = centerLat + radiusDegrees * Math.sin(theta)
+        val pointLon = centerLon + radiusDegrees * Math.cos(theta)
+        points.add(GeoPoint(pointLat, pointLon))
+    }
+    return points
+}
+
 @Composable
 fun MapView(model: UIViewModel = viewModel()) {
 
@@ -196,7 +213,7 @@ fun MapView(model: UIViewModel = viewModel()) {
     var showCurrentCacheInfo by remember { mutableStateOf(false) }
 
     val markerIcon by lazy {
-        AppCompatResources.getDrawable(context, R.drawable.ic_baseline_location_on_24)
+        AppCompatResources.getDrawable(context, R.drawable.car)
     }
 
     fun MapView.onNodesChanged(nodes: Collection<NodeInfo>): List<MarkerWithLabel> {
@@ -204,6 +221,26 @@ fun MapView(model: UIViewModel = viewModel()) {
         val ourNode = model.ourNodeInfo.value
         val gpsFormat = model.config.display.gpsFormat.number
         val displayUnits = model.config.display.units.number
+
+        // Clear existing overlays
+        overlays.clear()
+
+        // Add circle overlay for the current location
+        myLocationOverlay?.myLocation?.let { currentLocation ->
+            val circle = Polygon().apply {
+                // Set the points of the circle using GeoPoints
+                val circlePoints = calculateCirclePoints(currentLocation.latitude, currentLocation.longitude, 20.0)
+                points = circlePoints
+                // Set style attributes, e.g., fill color, outline color, etc.
+                // Modify as needed based on your requirements
+                fillColor = Color.argb(50, 0, 255, 0) // Green with 50% transparency
+                strokeColor = Color.GREEN
+                strokeWidth = 2f
+            }
+            overlays.add(circle)
+            invalidate() // Trigger redraw
+        }
+
         return nodesWithPosition.map { node ->
             val (p, u) = node.position!! to node.user!!
             MarkerWithLabel(this, "${u.shortName} ${formatAgo(p.time)}").apply {

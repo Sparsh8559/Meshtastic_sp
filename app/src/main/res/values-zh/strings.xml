@@ -159,4 +159,5 @@
     <string name="waypoint_edit">编辑航点</string>
     <string name="waypoint_delete">删除航点?</string>
     <string name="waypoint_new">新建航点</string>
+    <string name="speed_text">速度：0.00 公里/小时</string>
 </resources>

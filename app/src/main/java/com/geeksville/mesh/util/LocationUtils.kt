@@ -217,6 +217,7 @@ fun DMSToDegrees(
  * @return Bearing between the two points in degrees. A value of 0 means due
  * north.
  */
+
 fun bearing(
     lat1: Double,
     lon1: Double,

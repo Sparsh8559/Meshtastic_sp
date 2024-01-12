@@ -1,5 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="channel_name">Nome do Canal</string>
+    <!-- res/values-pt/strings.xml -->
+    <string name="speed_text">Velocidade: 0,00 km/h</string>
+
     <string name="channel_options">Opções do Canal</string>
     <string name="qr_code">Código QR</string>
     <string name="unset">Não Definido</string>

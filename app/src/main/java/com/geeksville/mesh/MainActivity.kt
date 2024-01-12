@@ -50,7 +50,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import android.Manifest
 import kotlinx.coroutines.cancel
+import android.content.Context
+import android.location.Location
+import android.location.LocationListener
+// Change the import statement to reflect the new location
+import com.geeksville.mesh.LocationManagerHelper
+
+import android.location.LocationManager
+import android.util.Log
+import androidx.core.app.ActivityCompat
+
 import java.text.DateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -103,17 +114,140 @@ eventually use bottom navigation bar to switch between, Members, Chat, Channel, 
 eventually:
   make a custom theme: https://github.com/material-components/material-components-android/tree/master/material-theme-builder
 */
+class MyLocationListener(private val speedTextView: TextView) : LocationListener {
+
+    private var lastLocation: Location? = null
+
+//    private fun calculateSpeed(location: Location): Float {
+//        val timeElapsed = (location.time - lastLocation?.time ?: 0) / 1000f // in seconds
+//        val distance = lastLocation?.distanceTo(location) ?: 0f // in meters
+//        return if (timeElapsed > 0) distance / timeElapsed else 0f
+//    }
+
+    private fun calculateSpeed(location: Location): Float {
+        val lastLocationTime = lastLocation?.time ?: 0
+        val timeElapsed = (location.time - lastLocationTime) / 1000f // in seconds
+
+        val distance = calculateDistance(
+            lastLocation?.latitude ?: location.latitude,
+            lastLocation?.longitude ?: location.longitude,
+            location.latitude,
+            location.longitude
+        )
+
+        // Convert speed to km/h
+        val speedInKmPerHour = if (timeElapsed > 0) (distance / timeElapsed) * 3.6f else 0f
+
+        return speedInKmPerHour
+    }
+
+
+    private fun calculateDistance(
+        startLatitude: Double,
+        startLongitude: Double,
+        endLatitude: Double,
+        endLongitude: Double
+    ): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(
+            startLatitude,
+            startLongitude,
+            endLatitude,
+            endLongitude,
+            results
+        )
+
+        val distance = results[0]
+
+        // Log distance for debugging
+        Log.d("DistanceCalculation", "Distance: $distance meters")
+
+        return distance
+    }
+
+
+
+
+//    private fun calculateDistance(startLocation: Location?, endLocation: Location): Float {
+//        val distance = calculateDistance(
+//            startLocation?.latitude ?: endLocation.latitude,
+//            startLocation?.longitude ?: endLocation.longitude,
+//            endLocation.latitude,
+//            endLocation.longitude
+//        )
+//
+//        // Log distance value
+//        Log.d("DistanceCalculation", "Distance: $distance meters")
+//
+//        return distance
+//    }
+
+
+
+
+    override fun onLocationChanged(location: Location) {
+
+        // Log location details
+        Log.d("LocationUpdate", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+
+        // Calculate speed
+        val currentSpeed = calculateSpeed(location)
+
+        // Update the TextView with the current speed
+        speedTextView.text = "Speed: ${String.format("%.2f", currentSpeed)} km/hr"
+
+        // Handle the updated location here
+        val latitude = location.latitude
+        val longitude = location.longitude
+        // Do something with the latitude and longitude
+
+        // Save the current location for the next calculation
+        lastLocation = location
+    }
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        // Handle changes in the status of the location provider
+    }
+
+    override fun onProviderEnabled(provider: String) {
+        // Handle the case when the location provider is enabled
+    }
+
+    override fun onProviderDisabled(provider: String) {
+        // Handle the case when the location provider is disabled
+    }
+}
+
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), Logging {
 
+    //
     private lateinit var binding: ActivityMainBinding
+    //private lateinit var speedTextView: TextView = findViewById(R.id.speedTextView)
+    private lateinit var speedTextView: TextView
+
 
     // Used to schedule a coroutine in the GUI thread
     private val mainScope = CoroutineScope(Dispatchers.Main + Job())
 
     private val bluetoothViewModel: BluetoothViewModel by viewModels()
     private val model: UIViewModel by viewModels()
+
+    /////////
+    // Define the location listener
+    private lateinit var locationListener: MyLocationListener
+    private lateinit var locationManagerHelper: LocationManagerHelper  // Initialize it here
+
+
+    // Define the location listener
+    //private lateinit var locationListener: MyLocationListener
+    //private lateinit var speedTextView: TextView
+    //private val locationListener = MyLocationListener(speedTextView)
+    //private val locationManagerHelper = LocationManagerHelper(this, locationListener)
+
+
 
     @Inject
     internal lateinit var serviceRepository: ServiceRepository
@@ -176,9 +310,31 @@ class MainActivity : AppCompatActivity(), Logging {
         override fun createFragment(position: Int): Fragment = tabInfos[position].content
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        // Step 1: Initialize the layout using setContentView
+        setContentView(R.layout.activity_main)
+
+        // Step 2: Reference the TextView
+        //val speedTextView: TextView = findViewById(R.id.speedTextView)
+        speedTextView = findViewById(R.id.speedTextView)
+
+        // Create an instance of LocationManagerHelper
+        //val locationManagerHelper = LocationManagerHelper(this)
+        // Initialize the location listener with the speedTextView
+        locationListener = MyLocationListener(speedTextView)
+        locationManagerHelper = LocationManagerHelper(this, locationListener)
+
+
+        if (locationManagerHelper.checkLocationPermission()) {
+            locationManagerHelper.registerLocationListener()
+        } else {
+            locationManagerHelper.requestLocationPermission(this)
+        }
 
         if (savedInstanceState == null) {
             val prefs = UIViewModel.getPreferences(this)

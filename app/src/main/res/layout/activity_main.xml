@@ -11,14 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/speedTextView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/meshtastic" -->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:text="Speed: 0.00 km/h"-->
+<!--        android:textSize="16sp" />-->
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
+
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+
+
+
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
@@ -30,6 +48,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
+
+
+
+
 
                     <ImageView
                         android:id="@+id/appIconImageVIew"
@@ -43,6 +65,8 @@
                         tools:layout_editor_absoluteX="16dp"
                         tools:layout_editor_absoluteY="18dp" />
 
+
+
                     <TextView
                         android:id="@+id/title"
                         android:layout_width="wrap_content"
@@ -54,22 +78,77 @@
                         android:text="@string/app_name"
                         android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
+
+
                 </com.google.android.material.appbar.MaterialToolbar>
+
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/tab_layout_description"
                 app:tabGravity="fill"
                 app:tabIconTint="@color/tab_color_selector"
                 app:tabIndicatorColor="@color/selectedColor" />
+
+
+
+
         </com.google.android.material.appbar.AppBarLayout>
+
+
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <TextView
+        android:id="@+id/speedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:padding="16dp"
+        android:layout_marginTop="110dp"
+        android:text="@string/speed_text"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/accelerationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:padding="16dp"
+        android:layout_marginTop="150dp"
+        android:text="Accl: 0.00 m/s²"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"/>
+
+
+
+    <!--    <TextView-->
+<!--        android:id="@+id/speedTextView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/meshtastic"-->
+<!--        android:layout_marginTop="120dp"-->
+<!--        android:text="Speed: 0.00 km/h"-->
+<!--        android:textSize="16sp" />-->
+
+
 </FrameLayout>

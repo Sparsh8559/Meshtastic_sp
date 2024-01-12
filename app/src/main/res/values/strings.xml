@@ -12,6 +12,10 @@
     <string name="sample_message" translatable="false">hey I found the cache, it is over here next to the big tiger. I\'m kinda scared.</string>
 
     <string name="channel_name">Channel Name</string>
+    <string name="tab_layout_description">Description for your tabs</string>
+    <string name="acceleration_text">Accl: %.2f m/s²</string>
+
+    <string name="speed_text">Speed: 0.00 km/h</string>
     <string name="channel_options">Channel options</string>
     <string name="qr_code">QR code</string>
     <string name="unset">Unset</string>
